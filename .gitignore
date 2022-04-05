@@ -1,0 +1,7 @@
+.venv*
+pico_sdk_import.cmake
+#pimoroni_pico_import.cmake
+build/
+pimoroni-pico
+
+.vscode
