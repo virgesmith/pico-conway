@@ -26,3 +26,11 @@ Requires the [pico C/C++ SDK](https://github.com/raspberrypi/pico-sdk) and the [
 1. copy image to device
 
 1. back of the net!
+
+## test
+
+The algorithm itself can be tested/debugged on the host machine using the test harness, e.g.:
+
+```sh
+ g++ -g -O0 --std=c++17 src/test_conway.cpp src/conway.cpp -o test
+```
