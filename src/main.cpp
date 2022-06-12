@@ -2,6 +2,10 @@
 #include "display.h"
 #include "conway.h"
 
+#include "drivers/button/button.hpp"
+#include "drivers/rgbled/rgbled.hpp"
+#include "libraries/pico_display_2/pico_display_2.hpp"
+
 #include <vector>
 
 #include <cmath>
@@ -42,6 +46,7 @@ private:
   std::vector<Rect> cells;
 };
 
+
 int main()
 {
   Display display;
@@ -49,25 +54,34 @@ int main()
   Renderer renderer(display, conway);
   bool dimmed = false;
 
+  Button button_a(PicoDisplay2::A);
+  Button button_b(PicoDisplay2::B);
+  Button button_x(PicoDisplay2::X);
+  Button button_y(PicoDisplay2::Y);
+
+  RGBLED led(PicoDisplay2::LED_R, PicoDisplay2::LED_G, PicoDisplay2::LED_B);
+
+  led.set_rgb(0, 127, 0);
+
   for (;;)
   {
     conway.evolve();
-    if (display.is_pressed(display.A))
+    if (button_a.raw())
     {
       sleep_ms(1000);
       conway.reset();
     }
-    else if (display.is_pressed(display.B))
+    else if (button_b.raw())
     {
       sleep_ms(1000);
       conway.clear();
     }
-    else if (display.is_pressed(display.X))
+    else if (button_x.raw())
     {
       conway.add_glider();
       sleep_ms(100);
     }
-    else if (display.is_pressed(display.Y))
+    else if (button_y.raw())
     {
       display.set_backlight(dimmed ? Display::MAX_BRIGHTNESS : Display::MAX_BRIGHTNESS/2);
       dimmed = !dimmed;

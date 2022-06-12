@@ -11,6 +11,7 @@ Cells are colour-coded according to their age. Button A resets, B clears the scr
 ### hardware
 
 Uses the [Rasbperry Pi pico](https://www.raspberrypi.com/products/raspberry-pi-pico/) with the [Pimoroni pico-display-2](https://shop.pimoroni.com/products/pico-display-pack-2-0?variant=39374122582099)
+
 ### software
 
 Requires the [pico C/C++ SDK](https://github.com/raspberrypi/pico-sdk) and the [pimoroni-pico](https://github.com/pimoroni/pimoroni-pico) libraries.
