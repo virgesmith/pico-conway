@@ -1,6 +1,8 @@
 #include "conway.h"
 #include <limits>
 
+#include <cstdlib>
+
 namespace
 {
   // workaround: % doesn't work correctly for -ve numbers

@@ -5,6 +5,7 @@
 
 #include <tuple>
 #include <vector>
+#include <limits>
 #include <cstdint>
 
 using std::size_t;

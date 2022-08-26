@@ -1,26 +1,32 @@
 
-#include "display.h"
+//#include "display.h"
 #include "conway.h"
 
 #include "drivers/button/button.hpp"
 #include "drivers/rgbled/rgbled.hpp"
+#include "drivers/st7789/st7789.hpp"
+#include "libraries/pico_graphics/pico_graphics.hpp"
 #include "libraries/pico_display_2/pico_display_2.hpp"
 
 #include <vector>
 
 #include <cmath>
 #include <cstdlib>
+#include <cstring>
 
 using namespace pimoroni;
 
+namespace {
+static const uint8_t MAX_BRIGHTNESS = 255;
+}
 class Renderer
 {
 public:
 
-  Renderer(Display& d, Conway& m) : display(d), model(m)
+  Renderer(PicoGraphics& g, DisplayDriver& d, Conway& m) : graphics(g), display(d), model(m)
   {
-    int xsize = display.bounds.w / model.width;
-    int ysize = display.bounds.h / model.height;
+    int xsize = display.width / model.width;
+    int ysize = display.height / model.height;
 
     cells.reserve(model.height * model.width);
     for (size_t h = 0; h < model.height; ++h)
@@ -34,14 +40,15 @@ public:
   {
     for (size_t i = 0; i < model.height * model.width; ++i)
     {
-      display.set_pen(model.states[i] * 257);
-      display.rectangle(cells[i]);
+      graphics.set_pen(model.states[i] * 257);
+      graphics.rectangle(cells[i]);
     }
-    display.update();
+    display.update(&graphics);
   }
 
 private:
-  Display& display;
+  PicoGraphics& graphics;
+  DisplayDriver& display;
   Conway& model;
   std::vector<Rect> cells;
 };
@@ -49,9 +56,14 @@ private:
 
 int main()
 {
-  Display display;
+  ST7789 st7789(320, 240, ROTATE_0, false, get_spi_pins(BG_SPI_FRONT));
+  PicoGraphics_PenRGB565 graphics(st7789.width, st7789.height, nullptr);
+
+  graphics.clear();
+  st7789.update(&graphics);
+
   Conway conway(80, 60);
-  Renderer renderer(display, conway);
+  Renderer renderer(graphics, st7789, conway);
   bool dimmed = false;
 
   Button button_a(PicoDisplay2::A);
@@ -68,13 +80,13 @@ int main()
     conway.evolve();
     if (button_a.raw())
     {
-      sleep_ms(1000);
       conway.reset();
+      sleep_ms(1000);
     }
     else if (button_b.raw())
     {
-      sleep_ms(1000);
       conway.clear();
+      sleep_ms(1000);
     }
     else if (button_x.raw())
     {
@@ -83,7 +95,7 @@ int main()
     }
     else if (button_y.raw())
     {
-      display.set_backlight(dimmed ? Display::MAX_BRIGHTNESS : Display::MAX_BRIGHTNESS/2);
+      st7789.set_backlight(dimmed ? MAX_BRIGHTNESS : MAX_BRIGHTNESS >> 1);
       dimmed = !dimmed;
       sleep_ms(100);
     }
