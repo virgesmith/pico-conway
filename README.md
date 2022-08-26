@@ -14,24 +14,40 @@ Uses the [Rasbperry Pi pico](https://www.raspberrypi.com/products/raspberry-pi-p
 
 ### software
 
-Requires the [pico C/C++ SDK](https://github.com/raspberrypi/pico-sdk) and the [pimoroni-pico](https://github.com/pimoroni/pimoroni-pico) libraries.
+Requires and the [pimoroni-pico](https://github.com/pimoroni/pimoroni-pico) libraries.
 
-1. ensure `PICO_SDK_PATH` is set correctly (relative to the build dir) in your environment, e.g. `export PICO_SDK_PATH=../../pico-sdk-1.3.0`
+1. download and extract a release of the [pico C/C++ SDK](https://github.com/raspberrypi/pico-sdk)
+
+1. symlink it into the project root as `pico-sdk`, e.g. `ln -s ../pico-sdk-1.4.0 pico-sdk`.
+
+1. symlink the cmake import: `ln -s pico-sdk/external/pico_sdk_import.cmake`
+
+1. set `export PICO_SDK_PATH=../pico-sdk` (this is relative to the build directory)
 
 1. (fork,) clone and build [pimoroni-pico](https://github.com/pimoroni/pimoroni-pico)
 
 1. symlink `pimoroni-pico` in the root of this project.
 
-1. build the image with `mkdir build && cd build && cmake .. && make -j`
+1. build the image with
 
-1. copy image to device
+  ```sh
+  mkdir -p build
+  cd build
+  cmake ..
+  make -j
+  ```
 
-1. back of the net!
+1. copy image to device (connected with `BOOTSEL` pressed), e.g.
+
+  ```sh
+  cp pico-conway.uf2 /media/<username>/RPI-RP2
+  ```
+
 
 ## test
 
 The algorithm itself can be tested/debugged on the host machine using the test harness, e.g.:
 
 ```sh
- g++ -g -O0 --std=c++17 src/test_conway.cpp src/conway.cpp -o test
+g++ -g -O0 --std=c++17 src/test_conway.cpp src/conway.cpp -o test
 ```

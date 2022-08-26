@@ -58,9 +58,7 @@ int main()
 {
   ST7789 st7789(320, 240, ROTATE_0, false, get_spi_pins(BG_SPI_FRONT));
   PicoGraphics_PenRGB565 graphics(st7789.width, st7789.height, nullptr);
-
   graphics.clear();
-  st7789.update(&graphics);
 
   Conway conway(80, 60);
   Renderer renderer(graphics, st7789, conway);
@@ -73,7 +71,7 @@ int main()
 
   RGBLED led(PicoDisplay2::LED_R, PicoDisplay2::LED_G, PicoDisplay2::LED_B);
 
-  led.set_rgb(0, 127, 0);
+  led.set_rgb(0, 63, 0);
 
   for (;;)
   {
