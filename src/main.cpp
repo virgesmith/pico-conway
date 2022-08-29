@@ -23,8 +23,13 @@ class Renderer
 {
 public:
 
-  Renderer(PicoGraphics& g, DisplayDriver& d, Conway& m) : graphics(g), display(d), model(m)
+  Renderer(PicoGraphics& g, DisplayDriver& d, Conway& m) : graphics(g), display(d), model(m), dimmed(true)
   {
+    display.set_backlight(MAX_BRIGHTNESS >> 1);
+
+    graphics.set_pen(0);
+    graphics.clear();
+
     int xsize = display.width / model.width;
     int ysize = display.height / model.height;
 
@@ -40,10 +45,16 @@ public:
   {
     for (size_t i = 0; i < model.height * model.width; ++i)
     {
-      graphics.set_pen(model.states[i] * 257);
+      graphics.set_pen(model.states[i]);
       graphics.rectangle(cells[i]);
     }
     display.update(&graphics);
+  }
+
+  void toggle_brightness()
+  {
+    display.set_backlight(dimmed ? MAX_BRIGHTNESS : MAX_BRIGHTNESS >> 1);
+    dimmed = !dimmed;
   }
 
 private:
@@ -51,18 +62,18 @@ private:
   DisplayDriver& display;
   Conway& model;
   std::vector<Rect> cells;
+  bool dimmed;
 };
 
 
 int main()
 {
   ST7789 st7789(320, 240, ROTATE_0, false, get_spi_pins(BG_SPI_FRONT));
-  PicoGraphics_PenRGB565 graphics(st7789.width, st7789.height, nullptr);
-  graphics.clear();
+  PicoGraphics_PenRGB332 graphics(st7789.width, st7789.height, nullptr);
 
-  Conway conway(80, 60);
+  Conway conway(106, 80);
+
   Renderer renderer(graphics, st7789, conway);
-  bool dimmed = false;
 
   Button button_a(PicoDisplay2::A);
   Button button_b(PicoDisplay2::B);
@@ -79,23 +90,22 @@ int main()
     if (button_a.raw())
     {
       conway.reset();
-      sleep_ms(1000);
+      sleep_ms(500);
     }
     else if (button_b.raw())
     {
       conway.clear();
-      sleep_ms(1000);
+      sleep_ms(500);
     }
     else if (button_x.raw())
     {
       conway.add_glider();
-      sleep_ms(100);
+      sleep_ms(250);
     }
     else if (button_y.raw())
     {
-      st7789.set_backlight(dimmed ? MAX_BRIGHTNESS : MAX_BRIGHTNESS >> 1);
-      dimmed = !dimmed;
-      sleep_ms(100);
+      renderer.toggle_brightness();
+      sleep_ms(250);
     }
     renderer.render();
   }
