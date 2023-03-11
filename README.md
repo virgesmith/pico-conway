@@ -18,13 +18,13 @@ Requires and the [pimoroni-pico](https://github.com/pimoroni/pimoroni-pico) libr
 
 1. download and extract a release of the [pico C/C++ SDK](https://github.com/raspberrypi/pico-sdk)
 
-1. symlink it into the project root as `pico-sdk`, e.g. `ln -s ../pico-sdk-1.4.0 pico-sdk`.
+1. symlink it into the project root as `pico-sdk`, e.g. `ln -s ../pico-sdk-1.5.0 pico-sdk`.
 
 1. symlink the cmake import: `ln -s pico-sdk/external/pico_sdk_import.cmake`
 
 1. set `export PICO_SDK_PATH=../pico-sdk` (this is relative to the build directory)
 
-1. (fork,) clone and build [pimoroni-pico](https://github.com/pimoroni/pimoroni-pico)
+1. (fork) and clone [pimoroni-pico](https://github.com/pimoroni/pimoroni-pico), do a `git submodule update --init` in the repo root.
 
 1. symlink `pimoroni-pico` in the root of this project.
 
@@ -49,5 +49,5 @@ Requires and the [pimoroni-pico](https://github.com/pimoroni/pimoroni-pico) libr
 The algorithm itself can be tested/debugged on the host machine using the test harness, e.g.:
 
 ```sh
-g++ -g -O0 --std=c++17 src/test_conway.cpp src/conway.cpp -o test
+g++ -g -O0 --std=c++20 src/test_conway.cpp src/conway.cpp -o test
 ```

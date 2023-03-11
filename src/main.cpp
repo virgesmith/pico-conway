@@ -91,7 +91,7 @@ int main()
 
   RGBLED led(PicoDisplay2::LED_R, PicoDisplay2::LED_G, PicoDisplay2::LED_B);
 
-  led.set_rgb(0, 63, 0);
+  led.set_rgb(0, 32, 0);
 
   for (;;)
   {
@@ -99,22 +99,22 @@ int main()
     if (button_a.raw())
     {
       conway.reset();
-      sleep_ms(500);
+      sleep_ms(250);
     }
     else if (button_b.raw())
     {
       conway.clear();
-      sleep_ms(500);
+      sleep_ms(250);
     }
     else if (button_x.raw())
     {
       conway.add_glider();
-      sleep_ms(250);
+      sleep_ms(100);
     }
     else if (button_y.raw())
     {
       renderer.toggle_brightness();
-      sleep_ms(250);
+      sleep_ms(100);
     }
     renderer.render();
   }

@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+namespace test {
+
 class Renderer
 {
 public:
@@ -14,9 +16,19 @@ public:
   void render()
   {
     for (size_t i = 0; i < conway.states.size(); ++i)
-      buffer[i] = (conway.states[i] == Conway::ALIVE) ? 'O' : '.';
-      //buffer[i] = '0' + conway.states[i];
-
+    {
+      switch(conway.states[i])
+      {
+        case Conway::ALIVE:
+          buffer[i] = 'O';
+          break;
+        case Conway::DEAD:
+          buffer[i] = '.';
+          break;
+        default:
+          buffer[i] = 'o';
+      }
+    }
     for (size_t i = 0; i < conway.states.size(); i += conway.width)
       std::cout << std::string(buffer.data() + i, buffer.data() + i + conway.width) << std::endl;
       std::getchar();
@@ -27,18 +39,12 @@ public:
 
 };
 
+}
 
 int main()
 {
   Conway conway(80, 60);
-  Renderer renderer(conway);
-
-  // for (size_t i = 0; i < conway.states.size(); ++i)
-  // {
-  //   auto[x, y] = conway.coord(i);
-  //   if (i != conway.index(x, y))
-  //     std::cout << i << std::endl;
-  // }
+  test::Renderer renderer(conway);
 
   for (;;)
   {
