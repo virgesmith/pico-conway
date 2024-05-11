@@ -16,22 +16,24 @@ Uses the [Rasbperry Pi pico](https://www.raspberrypi.com/products/raspberry-pi-p
 
 Requires pico-sdk and the pimoroni-pico](https://github.com/pimoroni/pimoroni-pico) libraries.
 
+1. fork or clone this repo.
+
 1. download and extract a release of the [pico C/C++ SDK](https://github.com/raspberrypi/pico-sdk)
 
-1. symlink it into the project root as `pico-sdk`, e.g. `ln -s ../pico-sdk-1.5.1 pico-sdk`.
+1. symlink it into the repo root as `pico-sdk`, e.g. `ln -s ../pico-sdk-1.5.1 pico-sdk`.
 
 1. symlink the cmake import: `ln -s pico-sdk/external/pico_sdk_import.cmake`
 
 1. download and extract a release of [pimoroni-pico](https://github.com/pimoroni/pimoroni-pico). This is needed for the graphics library and display driver.
 
-1. symlink it in the root as `pimoroni-pico`, e.g. `ln -s ../pimoroni-pico-1.21.0 pimoroni-pico`
+1. symlink it in the repo root as `pimoroni-pico`, e.g. `ln -s ../pimoroni-pico-1.21.0 pimoroni-pico`
 
 1. build the image with
 
     ```sh
     mkdir -p build
     cd build
-    cmake -DPICO_SDK_PATH=../pico-sdk ..
+    cmake ..
     make -j
     ```
 
@@ -46,5 +48,5 @@ Requires pico-sdk and the pimoroni-pico](https://github.com/pimoroni/pimoroni-pi
 The algorithm itself can be tested/debugged on the host machine using the test harness, e.g.:
 
 ```sh
-g++ -g -O0 --std=c++20 src/test_conway.cpp src/conway.cpp -o test
+g++ -g -O0 -Wall -Werror --std=c++20 src/test_conway.cpp src/conway.cpp -o test
 ```

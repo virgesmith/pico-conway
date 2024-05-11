@@ -11,8 +11,8 @@ class Conway {
 public:
   typedef uint8_t state_t;
 
-  static const state_t ALIVE = std::numeric_limits<state_t>::max();
-  static const state_t DEAD = 0;
+  static constexpr state_t ALIVE = std::numeric_limits<state_t>::max();
+  static constexpr state_t DEAD = 0;
 
   static const state_t GLIDER[3][3];
 
