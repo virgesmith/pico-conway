@@ -3,59 +3,39 @@
 
 #include <cstdlib>
 
-namespace
-{
-  // workaround: % doesn't work correctly for -ve numbers
-  inline int mod(int x, int n)
-  {
-    return (x % n + n) % n;
-  }
-}
+namespace {
+// workaround: % doesn't work correctly for -ve numbers
+inline int mod(int x, int n) { return (x % n + n) % n; }
+} // namespace
 
 const Conway::state_t Conway::GLIDER[3][3] = {{Conway::ALIVE, Conway::ALIVE, Conway::DEAD},
                                               {Conway::ALIVE, Conway::DEAD, Conway::ALIVE},
                                               {Conway::ALIVE, Conway::DEAD, Conway::DEAD}};
 
-Conway::Conway(size_t w, size_t h) : height(h), width(w), size(h * w), states(h * w), newstates(h * w)
-{
-  reset();
-}
+Conway::Conway(size_t w, size_t h) : height(h), width(w), size(h * w), states(h * w), newstates(h * w) { reset(); }
 
-void Conway::reset()
-{
+void Conway::reset() {
   for (size_t i = 0; i < size; ++i)
     states[i] = (i % 2 == 0 || i % 7 == 0) ? Conway::ALIVE : Conway::DEAD;
 }
 
-void Conway::clear()
-{
-  for (size_t i = 0; i < size; ++i)
-    states[i] = Conway::DEAD;
+void Conway::clear() {
+  std::fill(states.begin(), states.end(), Conway::DEAD);
 }
 
-std::tuple<int, int> Conway::coord(size_t idx) const
-{
-  return {idx % width, idx / width};
-}
+std::tuple<int, int> Conway::coord(size_t idx) const { return {idx % width, idx / width}; }
 
-size_t Conway::index(int x, int y) const
-{
-  return mod(x, width) + mod(y, height) * width;
-}
+size_t Conway::index(int x, int y) const { return mod(x, width) + mod(y, height) * width; }
 
-void Conway::age()
-{
-  for (size_t i = 0; i < size; ++i)
-  {
+void Conway::age() {
+  for (size_t i = 0; i < size; ++i) {
     newstates[i] = (states[i] != Conway::DEAD) ? states[i] - 1 : Conway::DEAD;
   }
 }
 
-void Conway::evolve()
-{
+void Conway::evolve() {
   age();
-  for (size_t i = 0; i < size; ++i)
-  {
+  for (size_t i = 0; i < size; ++i) {
     int c = count(i);
     if (c < 2 || c > 3)
       newstates[i] = Conway::DEAD;
@@ -68,20 +48,16 @@ void Conway::evolve()
     add_glider();
 }
 
-int Conway::alive(size_t idx) const
-{
-  return states[idx] != Conway::DEAD;
-}
+int Conway::alive(size_t idx) const { return states[idx] != Conway::DEAD; }
 
-int Conway::count(size_t idx) const
-{
+int Conway::count(size_t idx) const {
   auto [x, y] = coord(idx);
 
-  return alive(index(x - 1, y - 1)) + alive(index(x, y - 1)) + alive(index(x + 1, y - 1)) + alive(index(x - 1, y)) + alive(index(x + 1, y)) + alive(index(x - 1, y + 1)) + alive(index(x, y + 1)) + alive(index(x + 1, y + 1));
+  return alive(index(x - 1, y - 1)) + alive(index(x, y - 1)) + alive(index(x + 1, y - 1)) + alive(index(x - 1, y)) +
+         alive(index(x + 1, y)) + alive(index(x - 1, y + 1)) + alive(index(x, y + 1)) + alive(index(x + 1, y + 1));
 }
 
-void Conway::add_glider()
-{
+void Conway::add_glider() {
   size_t pos = rand() % size;
   size_t orient_x = rand() % 2 ? 1 : -1;
   size_t orient_y = rand() % 2 ? 1 : -1;

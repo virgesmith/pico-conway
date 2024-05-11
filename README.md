@@ -14,35 +14,32 @@ Uses the [Rasbperry Pi pico](https://www.raspberrypi.com/products/raspberry-pi-p
 
 ### software
 
-Requires and the [pimoroni-pico](https://github.com/pimoroni/pimoroni-pico) libraries.
+Requires pico-sdk and the pimoroni-pico](https://github.com/pimoroni/pimoroni-pico) libraries.
 
 1. download and extract a release of the [pico C/C++ SDK](https://github.com/raspberrypi/pico-sdk)
 
-1. symlink it into the project root as `pico-sdk`, e.g. `ln -s ../pico-sdk-1.5.0 pico-sdk`.
+1. symlink it into the project root as `pico-sdk`, e.g. `ln -s ../pico-sdk-1.5.1 pico-sdk`.
 
 1. symlink the cmake import: `ln -s pico-sdk/external/pico_sdk_import.cmake`
 
-1. set `export PICO_SDK_PATH=../pico-sdk` (this is relative to the build directory)
+1. download and extract a release of [pimoroni-pico](https://github.com/pimoroni/pimoroni-pico). This is needed for the graphics library and display driver.
 
-1. (fork) and clone [pimoroni-pico](https://github.com/pimoroni/pimoroni-pico), do a `git submodule update --init` in the repo root.
-
-1. symlink `pimoroni-pico` in the root of this project.
+1. symlink it in the root as `pimoroni-pico`, e.g. `ln -s ../pimoroni-pico-1.21.0 pimoroni-pico`
 
 1. build the image with
 
-  ```sh
-  mkdir -p build
-  cd build
-  cmake ..
-  make -j
-  ```
+    ```sh
+    mkdir -p build
+    cd build
+    cmake -DPICO_SDK_PATH=../pico-sdk ..
+    make -j
+    ```
 
 1. copy image to device (connected with `BOOTSEL` pressed), e.g.
 
-  ```sh
-  cp pico-conway.uf2 /media/<username>/RPI-RP2
-  ```
-
+    ```sh
+    cp pico-conway.uf2 /media/<username>/RPI-RP2
+    ```
 
 ## test
 

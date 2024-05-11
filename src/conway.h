@@ -1,18 +1,13 @@
 #pragma once
 
-// //#include "src/test_display.h"
-// #include "display.h"
-
+#include <cstdint>
+#include <limits>
 #include <tuple>
 #include <vector>
-#include <limits>
-#include <cstdint>
 
 using std::size_t;
 
-
-class Conway
-{
+class Conway {
 public:
   typedef uint8_t state_t;
 
@@ -47,9 +42,3 @@ public:
   std::vector<state_t> states;
   std::vector<state_t> newstates;
 };
-
-
-
-
-
-

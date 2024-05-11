@@ -1,19 +1,47 @@
-
 cmake_minimum_required(VERSION 3.13)
 
-message("Target is pico-conway")
+set(PICO_SDK_PATH ../pico-sdk)
 include(pico_sdk_import.cmake)
-project(pico-conway)
+
+project(pico-conway C CXX ASM)
+
+set(TARGET pico-conway)
+
+message("Target is ${TARGET}")
+
+set(PICO_BOARD pico)
+set(CMAKE_C_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
+
 pico_sdk_init()
-add_executable(pico-conway
+
+include_directories(${CMAKE_SOURCE_DIR}/pimoroni-pico)
+
+add_subdirectory(pimoroni-pico/drivers/rgbled EXCLUDE_FROM_ALL)
+add_subdirectory(pimoroni-pico/drivers/button EXCLUDE_FROM_ALL)
+add_subdirectory(pimoroni-pico/drivers/st7789 EXCLUDE_FROM_ALL)
+add_subdirectory(pimoroni-pico/libraries/pico_graphics EXCLUDE_FROM_ALL)
+add_subdirectory(pimoroni-pico/common EXCLUDE_FROM_ALL)
+
+add_executable(${TARGET}
   src/main.cpp
   src/conway.cpp
+  src/renderer.cpp
 )
-add_subdirectory(pimoroni-pico EXCLUDE_FROM_ALL)
-pico_enable_stdio_usb(pico-conway 0)
-pico_enable_stdio_uart(pico-conway 0)
-pico_add_extra_outputs(pico-conway)
-include_directories(${CMAKE_SOURCE_DIR}/pimoroni-pico)
-target_compile_options(pico-conway PRIVATE -Wno-psabi -Werror -Wall)
-target_link_libraries(pico-conway hardware_spi rgbled button st7789 pico_graphics)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
+
+target_compile_options(${TARGET} PRIVATE -O3 -Wno-psabi -Werror -Wall)
+
+target_link_libraries(${TARGET}
+  hardware_spi
+  rgbled
+  button
+  st7789
+  pico_graphics
+  button
+)
+
+pico_enable_stdio_usb(${TARGET} 0)
+pico_enable_stdio_uart(${TARGET} 0)
+pico_add_extra_outputs(${TARGET})
+
+
