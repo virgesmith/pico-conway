@@ -6,11 +6,13 @@ Cellular automata on a pico...
 
 Cells are colour-coded according to their age. Button A resets, B clears the screen, X adds a randomly-placed glider (this happens randomly without pressing anything). Y toggles screen brightness.
 
+Pico2 allows for a 160x120 cell domain, memory restrictions mean the original Pico can only support 106x80.
+
 ## build
 
 ### hardware
 
-Uses the [Rasbperry Pi pico](https://www.raspberrypi.com/products/raspberry-pi-pico/) with the [Pimoroni pico-display-2](https://shop.pimoroni.com/products/pico-display-pack-2-0?variant=39374122582099)
+Uses the Rasbperry Pi [Pico](https://www.raspberrypi.com/products/raspberry-pi-pico/) or [Pico2](https://www.raspberrypi.com/products/raspberry-pi-pico-2/) with the [Pimoroni pico-display-2](https://shop.pimoroni.com/products/pico-display-pack-2-0?variant=39374122582099)
 
 ### software
 
@@ -20,22 +22,25 @@ Requires pico-sdk and the pimoroni-pico](https://github.com/pimoroni/pimoroni-pi
 
 1. download and extract a release of the [pico C/C++ SDK](https://github.com/raspberrypi/pico-sdk)
 
-1. symlink it into the repo root as `pico-sdk`, e.g. `ln -s ../pico-sdk-1.5.1 pico-sdk`.
-
-1. symlink the cmake import: `ln -s pico-sdk/external/pico_sdk_import.cmake`
-
 1. download and extract a release of [pimoroni-pico](https://github.com/pimoroni/pimoroni-pico). This is needed for the graphics library and display driver.
 
-1. symlink it in the repo root as `pimoroni-pico`, e.g. `ln -s ../pimoroni-pico-1.21.0 pimoroni-pico`
+1. download a cross-compiler e.g. g++-arm-none-eabi if necessary. Prebuilt riscv toolchains is available [here](https://github.com/raspberrypi/pico-sdk-tools/releases/tag/v2.0.0-1)
 
-1. build the image with
+1. edit CMakeLists.txt so that PICO_SDK_PATH and PIMORONI_PATH point to the correct locations
+
+1. build the image for the intended platform, optionally supplying the toolchain path (if not in `$PATH`), e.g.
 
     ```sh
     mkdir -p build
     cd build
-    cmake ..
+    cmake -DPICO_PLATFORM=rp2350-riscv -DPICO_TOOLCHAIN_PATH=/opt/riscv-gcc-14 ..
     make -j
     ```
+
+    Valid values for `PICO_PLATORM` are:
+    - `rp2040` (Cortex M0+)
+    - `rp2350` or `rp2350-arm-s` (Cortex M33+)
+    - `rp2350-riscv` (Hazard 3)
 
 1. copy image to device (connected with `BOOTSEL` pressed), e.g.
 

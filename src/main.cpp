@@ -20,7 +20,11 @@ int main() {
   ST7789 st7789(320, 240, ROTATE_0, false, get_spi_pins(BG_SPI_FRONT));
   PicoGraphics_PenRGB332 graphics(st7789.width, st7789.height, nullptr);
 
+#ifdef PICO_RP2350
+  Conway conway(160, 120);
+#else
   Conway conway(106, 80);
+#endif
 
   Renderer renderer(graphics, st7789, conway);
 

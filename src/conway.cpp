@@ -1,4 +1,7 @@
 #include "conway.h"
+
+#include "pico/rand.h"
+
 #include <limits>
 
 #include <cstdlib>
@@ -7,6 +10,18 @@ namespace {
 // workaround: % doesn't work correctly for -ve numbers
 inline int mod(int x, int n) { return (x % n + n) % n; }
 } // namespace
+
+union SplitU32 {
+  SplitU32(uint32_t n): n(n) { }
+  struct _bits {
+    bool bit0: 1;
+    bool bit1: 1;
+    uint16_t bit2_15: 14;
+    uint16_t bit16_31;
+  } bits;
+  uint32_t n;
+};
+
 
 const Conway::state_t Conway::GLIDER[3][3] = {{Conway::ALIVE, Conway::ALIVE, Conway::DEAD},
                                               {Conway::ALIVE, Conway::DEAD, Conway::ALIVE},
@@ -19,9 +34,7 @@ void Conway::reset() {
     states[i] = (i % 2 == 0 || i % 7 == 0) ? Conway::ALIVE : Conway::DEAD;
 }
 
-void Conway::clear() {
-  std::fill(states.begin(), states.end(), Conway::DEAD);
-}
+void Conway::clear() { std::fill(states.begin(), states.end(), Conway::DEAD); }
 
 std::tuple<int, int> Conway::coord(size_t idx) const { return {idx % width, idx / width}; }
 
@@ -44,7 +57,7 @@ void Conway::evolve() {
   }
   states.swap(newstates);
   // occasionally add a random glider to keep it going
-  if (rand() % 64 == 0)
+  if (get_rand_32() % 64 == 0)
     add_glider();
 }
 
@@ -58,9 +71,10 @@ int Conway::count(size_t idx) const {
 }
 
 void Conway::add_glider() {
-  size_t pos = rand() % size;
-  size_t orient_x = rand() % 2 ? 1 : -1;
-  size_t orient_y = rand() % 2 ? 1 : -1;
+  SplitU32 n(get_rand_32());
+  size_t pos = n.bits.bit2_15 % size;
+  size_t orient_x = n.bits.bit0 ? 1 : -1;
+  size_t orient_y = n.bits.bit0 ? 1 : -1;
 
   for (size_t y = 0; y < 3; ++y)
     for (size_t x = 0; x < 3; ++x)
